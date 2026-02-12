@@ -1,0 +1,103 @@
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import DarkModeToggle from '../components/DarkModeToggle';
+
+const VehicleTypeSelection: React.FC = () => {
+    const navigate = useNavigate();
+    const [hasVehicles, setHasVehicles] = useState(false);
+
+    useEffect(() => {
+        const garageStr = localStorage.getItem('autominder_garage');
+        if (garageStr) {
+            const garage = JSON.parse(garageStr);
+            if (garage.length > 0) {
+                setHasVehicles(true);
+            }
+        }
+    }, []);
+
+    const selectType = (type: 'car' | 'moto') => {
+        navigate('/setup-profile', { state: { vehicleType: type } });
+    };
+
+    return (
+        <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden bg-background-light dark:bg-background-dark">
+            {/* Header */}
+            <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 py-4 lg:px-10">
+                <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-center h-8 w-8 rounded-full bg-primary/20 text-green-800 dark:text-green-300">
+                        <span className="material-symbols-outlined text-xl">directions_car</span>
+                    </div>
+                    <h2 className="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight">Car Care App</h2>
+                </div>
+                <div className="flex gap-2">
+                     <DarkModeToggle />
+                </div>
+            </header>
+            
+            {/* Main Layout Container */}
+            <div className="layout-container flex h-full grow flex-col items-center justify-start pt-8 pb-12 px-4 sm:px-6">
+                <div className="layout-content-container flex flex-col w-full max-w-[640px] flex-1 gap-8">
+                    
+                    {/* Progress Bar Section */}
+                    <div className="flex flex-col gap-3 w-full">
+                        <div className="flex gap-6 justify-between items-center">
+                            <p className="text-slate-900 dark:text-white text-sm font-bold uppercase tracking-wide">
+                                {hasVehicles ? 'Nuevo Vehículo' : 'Paso 1 de 4'}
+                            </p>
+                            <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Configuración</p>
+                        </div>
+                        <div className="rounded-full bg-slate-200 dark:bg-slate-800 h-2 w-full overflow-hidden">
+                            <div className="h-full rounded-full bg-primary" style={{ width: '25%' }}></div>
+                        </div>
+                    </div>
+                    
+                    {/* Page Heading */}
+                    <div className="flex flex-col gap-3 text-center sm:text-left mt-4">
+                        <h1 className="text-slate-900 dark:text-white text-4xl sm:text-5xl font-black leading-tight tracking-tight">
+                            {hasVehicles ? 'Añadir otro vehículo.' : 'Vamos a prepararlo todo.'}
+                        </h1>
+                        <p className="text-slate-500 dark:text-slate-400 text-lg font-medium leading-relaxed max-w-xl">
+                            Selecciona tu tipo de vehículo para personalizar el programa de mantenimiento y los recordatorios.
+                        </p>
+                    </div>
+                    
+                    {/* Selection Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mt-4">
+                        {/* Car Card */}
+                        <button onClick={() => selectType('car')} className="group relative flex flex-col items-center sm:items-start gap-6 rounded-xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 transition-all duration-200 hover:border-primary hover:shadow-xl hover:shadow-primary/10 focus:outline-none focus:ring-4 focus:ring-primary/20 text-left">
+                            <div className="flex items-center justify-center h-16 w-16 rounded-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white group-hover:bg-primary group-hover:text-slate-900 transition-colors duration-200">
+                                <span className="material-symbols-outlined text-4xl">directions_car</span>
+                            </div>
+                            <div className="flex flex-col gap-1 items-center sm:items-start">
+                                <h2 className="text-slate-900 dark:text-white text-xl font-bold leading-tight">Coche</h2>
+                                <p className="text-slate-500 dark:text-slate-400 text-sm">Turismo, SUV, Furgoneta, etc.</p>
+                            </div>
+                        </button>
+                        
+                        {/* Motorcycle Card */}
+                        <button onClick={() => selectType('moto')} className="group relative flex flex-col items-center sm:items-start gap-6 rounded-xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 transition-all duration-200 hover:border-primary hover:shadow-xl hover:shadow-primary/10 focus:outline-none focus:ring-4 focus:ring-primary/20 text-left">
+                            <div className="flex items-center justify-center h-16 w-16 rounded-full bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white group-hover:bg-primary group-hover:text-slate-900 transition-colors duration-200">
+                                <span className="material-symbols-outlined text-4xl">two_wheeler</span>
+                            </div>
+                            <div className="flex flex-col gap-1 items-center sm:items-start">
+                                <h2 className="text-slate-900 dark:text-white text-xl font-bold leading-tight">Moto</h2>
+                                <p className="text-slate-500 dark:text-slate-400 text-sm">Deportiva, Custom, Scooter</p>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    {hasVehicles && (
+                        <div className="mt-auto pt-6 text-center">
+                             <button onClick={() => navigate('/dashboard')} className="inline-block mt-4 text-sm font-bold text-primary hover:underline transition-colors">
+                                Cancelar y volver al Panel
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default VehicleTypeSelection;
